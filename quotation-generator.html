@@ -7,6 +7,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <!-- Quill Rich Text Editor -->
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
   <style>
     /* ─── CSS Variables ─────────────────────────────────────── */
     :root {
@@ -124,7 +129,7 @@
       margin-bottom: 40px;
       gap: 20px;
     }
-    .q-logo-block {}
+
     .q-logo-block .company-name {
       font-size: 22px;
       font-weight: 800;
@@ -217,6 +222,66 @@
       gap: 14px;
     }
     .meta-row .meta-group { flex: 1; }
+
+    /* ─── Description & Table Container ─────────────────────── */
+    .q-description-table-container {
+      background: #fdfdfe;
+      border: 1px solid var(--grey-200);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+    
+    /* Scope of work */
+    .q-scope {
+      margin-bottom: 32px;
+      padding-bottom: 32px;
+      border-bottom: 1px dashed var(--grey-200);
+    }
+    .q-scope h3 {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 16px;
+      letter-spacing: -0.2px;
+      text-transform: uppercase;
+    }
+    .scope-row {
+      margin-bottom: 16px;
+    }
+    .scope-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* Custom Quill Editor Styles */
+    .ql-toolbar.ql-snow {
+      border: 1.5px solid var(--grey-200);
+      border-bottom: none;
+      border-radius: 6px 6px 0 0;
+      background: var(--grey-100);
+      font-family: inherit;
+    }
+    .ql-container.ql-snow {
+      border: 1.5px solid var(--grey-200);
+      border-radius: 0 0 6px 6px;
+      background: var(--grey-100);
+      font-family: inherit;
+      font-size: 13.5px;
+      color: var(--grey-900);
+      transition: background .2s, border-color .2s;
+    }
+    .ql-container.ql-snow .ql-editor {
+      min-height: 120px;
+    }
+    .ql-container.ql-snow.ql-focus,
+    .ql-toolbar.ql-snow:focus-within {
+      background: #fff;
+    }
+    .ql-container.ql-snow.ql-focus {
+      border-color: var(--accent);
+    }
 
     /* Services Table */
     .q-table-wrap { overflow-x: auto; margin-bottom: 12px; }
@@ -387,6 +452,14 @@
       .q-meta { grid-template-columns: 1fr; gap: 16px; margin-bottom: 24px; }
       .meta-row { flex-direction: column; gap: 16px; }
       
+      .q-description-table-container {
+        padding: 20px;
+        margin-bottom: 24px;
+        border-radius: 8px;
+      }
+      .q-scope h3 { font-size: 16px; }
+      .scope-grid { grid-template-columns: 1fr; gap: 12px; }
+
       .q-table-wrap {
         border: 1px solid var(--grey-200);
         border-radius: 8px;
@@ -420,7 +493,20 @@
         max-width: 100%;
         animation: none;
       }
-      .quotation { padding: 28px 36px; }
+      .quotation { 
+        padding: 12mm 14mm; /* Replaces @page margin to prevent text touching the paper edge */
+      }
+
+      .q-description-table-container {
+        padding: 0;
+        border: none;
+        background: transparent;
+      }
+
+      /* Hide rich editor toolbar on print */
+      .ql-toolbar { display: none !important; }
+      .ql-container.ql-snow { border: none !important; background: transparent !important; }
+      .ql-editor { padding: 0 !important; }
 
       td input, .meta-group input, .meta-group textarea, .footer-col textarea {
         border: none !important;
@@ -433,7 +519,7 @@
       table { page-break-inside: auto; }
       tbody tr { page-break-inside: avoid; }
 
-      @page { size: A4; margin: 12mm 14mm; }
+      @page { size: A4; margin: 0mm; }
     }
 
 
@@ -712,29 +798,71 @@
         </div>
       </div>
 
-      <!-- Services Table -->
-      <div class="q-table-wrap">
-        <table id="serviceTable">
-          <thead>
-            <tr>
-              <th style="width:40%">Service Description</th>
-              <th style="width:12%">Qty / Unit</th>
-              <th style="width:15%">Rate (LKR)</th>
-              <th style="width:16%">Amount (LKR)</th>
-              <th style="width:8%" class="no-print">Action</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody">
-            <!-- Rows injected by JS -->
-          </tbody>
-        </table>
-      </div>
+      <!-- Description & Table Container -->
+      <div class="q-description-table-container">
+        
+        <!-- Scope of work & Service params -->
+        <div class="q-scope">
+          <h3>Scope of Work &amp; Requirements</h3>
+          
+          <!-- General Paragraph -->
+          <div class="scope-row">
+            <div class="meta-group">
+              <label>Introduction / Description</label>
+              <!-- Quill acts on this div -->
+              <div id="scopeDesc"></div>
+            </div>
+          </div>
 
-      <!-- Add Row button inside card (screen) -->
-      <button class="btn btn-add-row no-print" onclick="addRow()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Add New Row
-      </button>
+          <!-- Specific Fields Grid -->
+          <div class="scope-grid">
+            <div class="meta-group">
+              <label>Daily Service</label>
+              <input type="text" id="dailySvc" placeholder="e.g. Sweeping, Mopping" />
+            </div>
+            <div class="meta-group">
+              <label>Monthly Service</label>
+              <input type="text" id="monthlySvc" placeholder="e.g. Deep Cleaning" />
+            </div>
+            <div class="meta-group">
+              <label>Materials Provided</label>
+              <input type="text" id="materialsProv" placeholder="e.g. All Cleansers & Tools included" />
+            </div>
+            <div class="meta-group">
+              <label>Duty Hours</label>
+              <input type="text" id="dutyHours" placeholder="e.g. 08:00 AM - 05:00 PM" />
+            </div>
+            <div class="meta-group" style="grid-column: 1 / -1;">
+              <label>Holiday Work Policy</label>
+              <input type="text" id="holidayWork" placeholder="e.g. Available upon prior request at 1.5x regular rate" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Services Table -->
+        <div class="q-table-wrap">
+          <table id="serviceTable">
+            <thead>
+              <tr>
+                <th style="width:40%">Service Description</th>
+                <th style="width:12%">Qty / Unit</th>
+                <th style="width:15%">Rate (LKR)</th>
+                <th style="width:16%">Amount (LKR)</th>
+                <th style="width:8%" class="no-print">Action</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <!-- Rows injected by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Add Row button inside card (screen) -->
+        <button class="btn btn-add-row no-print" onclick="addRow()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add New Row
+        </button>
+      </div>
 
       <!-- Totals -->
       <div class="q-totals">
@@ -811,9 +939,26 @@ A/C No: 0123456789</textarea>
 
     /* ── State ───────────────────────────────────────────────────────── */
     let rowIndex = 0;
+    let quill;
 
     /* ── Init ────────────────────────────────────────────────────────── */
     function init() {
+      // Initialize Quill Editor
+      if (!quill) {
+        quill = new Quill('#scopeDesc', {
+          theme: 'snow',
+          placeholder: 'Enter an overview of the services to be provided...',
+          modules: {
+            toolbar: [
+              ['bold', 'italic', 'underline', 'strike'],
+              [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+              [{ 'color': [] }, { 'background': [] }],
+              ['link', 'clean']
+            ]
+          }
+        });
+      }
+
       // Default dates
       const today = new Date();
       const fmt = d => d.toISOString().split('T')[0];
@@ -889,6 +1034,12 @@ A/C No: 0123456789</textarea>
       document.getElementById('clientName').value    = '';
       document.getElementById('clientAddress').value = '';
       document.getElementById('preparedBy').value    = '';
+      quill.setText('');
+      document.getElementById('dailySvc').value      = '';
+      document.getElementById('monthlySvc').value    = '';
+      document.getElementById('materialsProv').value = '';
+      document.getElementById('dutyHours').value     = '';
+      document.getElementById('holidayWork').value   = '';
       document.getElementById('tableBody').innerHTML = '';
       rowIndex = 0;
       init();
