@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quotation Generator – TRICO JANITORIAL SERVICE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── CSS Variables ─────────────────────────────────────── */
+    :root {
+      --navy:      #0d2246;
+      --blue:      #1a3a6b;
+      --accent:    #2563eb;
+      --accent-lt: #dbeafe;
+      --grey-100:  #f1f4f9;
+      --grey-200:  #e2e8f0;
+      --grey-400:  #94a3b8;
+      --grey-700:  #334155;
+      --grey-900:  #0f172a;
+      --white:     #ffffff;
+      --danger:    #dc2626;
+      --success:   #16a34a;
+      --radius:    8px;
+      --shadow:    0 4px 24px rgba(13,34,70,.12);
+    }
+
+    /* ─── Reset & Base ──────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0d2246 0%, #1a3a6b 50%, #0f3460 100%);
+      min-height: 100vh;
+      padding: 30px 16px;
+      color: var(--grey-900);
+    }
+
+    /* ─── App Shell ─────────────────────────────────────────── */
+    .app-title {
+      text-align: center;
+      color: #fff;
+      font-size: 13px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-weight: 500;
+      opacity: .7;
+      margin-bottom: 6px;
+    }
+    .app-headline {
+      text-align: center;
+      color: #fff;
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 28px;
+      letter-spacing: -0.5px;
+    }
+    .app-headline span { color: #60a5fa; }
+
+    /* ─── Controls Bar ──────────────────────────────────────── */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 11px 22px;
+      border: none;
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      letter-spacing: .3px;
+    }
+    .btn-primary   { background: var(--accent);  color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37,99,235,.4); }
+    .btn-success   { background: var(--success); color: #fff; }
+    .btn-success:hover { background: #15803d; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(22,163,74,.4); }
+    .btn-outline   { background: rgba(255,255,255,.12); color: #fff; border: 1.5px solid rgba(255,255,255,.3); backdrop-filter: blur(8px); }
+    .btn-outline:hover { background: rgba(255,255,255,.22); transform: translateY(-1px); }
+    .btn-danger    { background: var(--danger); color: #fff; }
+    .btn-danger:hover { background: #b91c1c; }
+    .btn-sm        { padding: 6px 12px; font-size: 12px; border-radius: 5px; }
+    .btn-add-row {
+      background: var(--accent-lt);
+      color: var(--accent);
+      border: 1.5px dashed var(--accent);
+      width: 100%;
+      margin-top: 10px;
+      justify-content: center;
+      padding: 9px;
+      font-size: 13px;
+    }
+    .btn-add-row:hover { background: #bfdbfe; }
+
+    /* ─── Main Card ─────────────────────────────────────────── */
+    .card {
+      max-width: 920px;
+      margin: 0 auto;
+      background: var(--white);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    /* ─── Quotation Document ────────────────────────────────── */
+    .quotation {
+      padding: 52px 56px;
+    }
+
+    /* Header */
+    .q-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 40px;
+      gap: 20px;
+    }
+    .q-logo-block {}
+    .q-logo-block .company-name {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+    }
+    .q-logo-block .company-name span { color: var(--accent); }
+    .q-logo-block .company-tagline {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--grey-400);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-top: 3px;
+    }
+    .q-logo-block .company-address {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--grey-700);
+      line-height: 1.7;
+    }
+
+    .q-badge {
+      background: linear-gradient(135deg, var(--navy), var(--blue));
+      color: #fff;
+      border-radius: 10px;
+      padding: 16px 24px;
+      text-align: right;
+      min-width: 155px;
+    }
+    .q-badge .badge-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      opacity: .6;
+    }
+    .q-badge .badge-title {
+      font-size: 20px;
+      font-weight: 800;
+      margin-top: 2px;
+      letter-spacing: -0.5px;
+    }
+
+    /* Divider bar */
+    .q-divider {
+      height: 3px;
+      background: linear-gradient(90deg, var(--navy), var(--accent), transparent);
+      border-radius: 2px;
+      margin-bottom: 32px;
+    }
+
+    /* Client + Quote Meta */
+    .q-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 36px;
+    }
+    .meta-group label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--grey-400);
+      margin-bottom: 6px;
+    }
+    .meta-group input, .meta-group textarea {
+      width: 100%;
+      border: 1.5px solid var(--grey-200);
+      border-radius: 6px;
+      padding: 9px 12px;
+      font-family: inherit;
+      font-size: 13.5px;
+      color: var(--grey-900);
+      background: var(--grey-100);
+      transition: border-color .2s, background .2s;
+      resize: none;
+      outline: none;
+    }
+    .meta-group input:focus, .meta-group textarea:focus {
+      border-color: var(--accent);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+    }
+    .meta-row {
+      display: flex;
+      gap: 14px;
+    }
+    .meta-row .meta-group { flex: 1; }
+
+    /* Services Table */
+    .q-table-wrap { overflow-x: auto; margin-bottom: 12px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead tr {
+      background: linear-gradient(90deg, var(--navy), var(--blue));
+    }
+    thead th {
+      padding: 13px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: rgba(255,255,255,.85);
+      text-align: left;
+    }
+    thead th:last-child, thead th:nth-child(2),
+    thead th:nth-child(3), thead th:nth-child(4) { text-align: right; }
+
+    tbody tr {
+      border-bottom: 1px solid var(--grey-200);
+      transition: background .15s;
+    }
+    tbody tr:hover { background: #f8faff; }
+    tbody td {
+      padding: 10px 14px;
+      font-size: 13.5px;
+      color: var(--grey-700);
+    }
+    tbody td:nth-child(2), tbody td:nth-child(3),
+    tbody td:nth-child(4) { text-align: right; }
+    tbody td:last-child { text-align: center; }
+
+    td input {
+      width: 100%;
+      border: 1px solid transparent;
+      border-radius: 5px;
+      padding: 5px 8px;
+      font-family: inherit;
+      font-size: 13.5px;
+      color: var(--grey-900);
+      background: transparent;
+      transition: border-color .2s, background .2s;
+      outline: none;
+    }
+    td input:focus {
+      border-color: var(--accent);
+      background: #f0f6ff;
+    }
+    .td-right input { text-align: right; }
+    .amount-cell {
+      font-weight: 600;
+      color: var(--navy);
+      font-size: 13.5px;
+    }
+
+    /* Totals */
+    .q-totals {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+      margin-bottom: 36px;
+    }
+    .totals-box {
+      min-width: 300px;
+      border: 1.5px solid var(--grey-200);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .totals-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 18px;
+      border-bottom: 1px solid var(--grey-200);
+      font-size: 13.5px;
+    }
+    .totals-row:last-child { border-bottom: none; }
+    .totals-row .t-label { color: var(--grey-400); font-weight: 500; }
+    .totals-row .t-value { color: var(--grey-900); font-weight: 600; }
+    .totals-row.grand {
+      background: linear-gradient(90deg, var(--navy), var(--blue));
+    }
+    .totals-row.grand .t-label { color: rgba(255,255,255,.75); font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    .totals-row.grand .t-value { color: #fff; font-size: 17px; font-weight: 800; }
+
+
+
+    /* Footer */
+    .q-footer {
+      border-top: 2px solid var(--grey-200);
+      padding-top: 28px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+    .footer-col h4 {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--grey-400);
+      margin-bottom: 10px;
+    }
+    .footer-col textarea {
+      width: 100%;
+      border: 1.5px solid var(--grey-200);
+      border-radius: 6px;
+      padding: 9px 12px;
+      font-family: inherit;
+      font-size: 12.5px;
+      color: var(--grey-700);
+      background: var(--grey-100);
+      resize: none;
+      outline: none;
+      height: 80px;
+      line-height: 1.7;
+      transition: border-color .2s;
+    }
+    .footer-col textarea:focus { border-color: var(--accent); background: #fff; }
+
+    .sig-line {
+      margin-top: 40px;
+      border-top: 1.5px solid var(--grey-700);
+      padding-top: 8px;
+      font-size: 11.5px;
+      color: var(--grey-400);
+      font-weight: 500;
+    }
+    .q-stamp {
+      text-align: center;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--grey-200);
+      font-size: 11px;
+      color: var(--grey-400);
+      letter-spacing: .5px;
+    }
+
+    /* ─── Animations ────────────────────────────────────────── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .card { animation: fadeInUp .4s ease; }
+    tbody tr { animation: fadeInUp .2s ease; }
+
+    /* ─── PRINT STYLES ──────────────────────────────────────── */
+    @media print {
+      body {
+        background: #fff !important;
+        padding: 0;
+        margin: 0;
+      }
+      .app-title, .app-headline, .controls, .no-print { display: none !important; }
+
+      .card {
+        box-shadow: none;
+        border-radius: 0;
+        max-width: 100%;
+        animation: none;
+      }
+      .quotation { padding: 28px 36px; }
+
+      td input, .meta-group input, .meta-group textarea, .footer-col textarea {
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 0;
+      }
+      .btn-add-row, .btn-danger { display: none !important; }
+
+      table { page-break-inside: auto; }
+      tbody tr { page-break-inside: avoid; }
+
+      @page { size: A4; margin: 12mm 14mm; }
+    }
+
+
+    /* ─── Login Overlay ─────────────────────────────────────── */
+    #loginOverlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #0a1a3a 0%, #0d2246 50%, #0f3460 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity .4s ease;
+    }
+    #loginOverlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .login-card {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: 20px;
+      padding: 48px 44px 42px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.45);
+      animation: fadeInUp .45s ease;
+    }
+    .login-logo {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .login-logo .brand {
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -.3px;
+    }
+    .login-logo .brand span { color: #60a5fa; }
+    .login-logo .sub {
+      font-size: 10px;
+      font-weight: 500;
+      color: rgba(255,255,255,.4);
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      margin-top: 4px;
+    }
+    .login-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .login-sub {
+      font-size: 12.5px;
+      color: rgba(255,255,255,.4);
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .login-field {
+      margin-bottom: 16px;
+    }
+    .login-field label {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: rgba(255,255,255,.45);
+      margin-bottom: 7px;
+    }
+    .login-field .input-wrap {
+      position: relative;
+    }
+    .login-field .input-wrap svg {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: .4;
+      pointer-events: none;
+    }
+    .login-field input {
+      width: 100%;
+      background: rgba(255,255,255,.07);
+      border: 1.5px solid rgba(255,255,255,.12);
+      border-radius: 9px;
+      padding: 12px 14px 12px 40px;
+      font-family: inherit;
+      font-size: 14px;
+      color: #fff;
+      outline: none;
+      transition: border-color .2s, background .2s;
+    }
+    .login-field input::placeholder { color: rgba(255,255,255,.25); }
+    .login-field input:focus {
+      border-color: #60a5fa;
+      background: rgba(255,255,255,.11);
+    }
+    .login-error {
+      font-size: 12px;
+      color: #f87171;
+      text-align: center;
+      min-height: 18px;
+      margin-bottom: 14px;
+      font-weight: 500;
+    }
+    .btn-login {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 14.5px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: .3px;
+      transition: all .2s;
+      box-shadow: 0 4px 20px rgba(37,99,235,.4);
+    }
+    .btn-login:hover { background: linear-gradient(90deg, #1d4ed8, #1e40af); transform: translateY(-1px); }
+    .btn-login:active { transform: translateY(0); }
+    .login-hint {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 11px;
+      color: rgba(255,255,255,.22);
+    }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-8px); }
+      40%      { transform: translateX(8px); }
+      60%      { transform: translateX(-6px); }
+      80%      { transform: translateX(6px); }
+    }
+    .shake { animation: shake .4s ease; }
+
+    /* hide app until logged in */
+    #appShell { display: none; }
+
+    /* logout button */
+    .btn-logout {
+      background: rgba(255,255,255,.1);
+      color: rgba(255,255,255,.75);
+      border: 1px solid rgba(255,255,255,.2);
+    }
+    .btn-logout:hover { background: rgba(220,38,38,.25); border-color: #f87171; color: #fff; }
+
+  </style>
+</head>
+<body>
+
+  <!-- ── Login Overlay ── -->
+  <div id="loginOverlay">
+    <div class="login-card" id="loginCard">
+      <div class="login-logo">
+        <div class="brand">TRICO <span>JANITORIAL</span> SERVICE</div>
+        <div class="sub">Quotation Management System</div>
+      </div>
+      <div class="login-title">Welcome Back</div>
+      <p class="login-sub">Sign in to access the quotation generator</p>
+
+      <div class="login-field">
+        <label>Username</label>
+        <div class="input-wrap">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input type="text" id="loginUser" placeholder="Enter username" autocomplete="username" />
+        </div>
+      </div>
+      <div class="login-field">
+        <label>Password</label>
+        <div class="input-wrap">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input type="password" id="loginPass" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter') doLogin()" />
+        </div>
+      </div>
+
+      <p class="login-error" id="loginError"></p>
+
+      <button class="btn btn-login" onclick="doLogin()">
+        Sign In &nbsp;→
+      </button>
+      <p class="login-hint">Authorized personnel only</p>
+    </div>
+  </div>
+
+
+  <!-- ── App Shell (hidden until login) ── -->
+  <div id="appShell">
+
+  <!-- ── App Header ── -->
+  <p class="app-title">Business Document Generator</p>
+  <h1 class="app-headline">Quotation <span>Generator</span></h1>
+
+  <!-- ── Action Buttons ── -->
+  <div class="controls no-print">
+    <button class="btn btn-primary" onclick="addRow()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Service Row
+    </button>
+    <button class="btn btn-success" onclick="printQuote()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      Download / Print PDF
+    </button>
+    <button class="btn btn-outline" onclick="clearForm()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.6"/></svg>
+      Reset Form
+    </button>
+    <button class="btn btn-logout" onclick="doLogout()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Logout
+    </button>
+  </div>
+
+  <!-- ── Main Document Card ── -->
+  <div class="card">
+    <div class="quotation" id="quotation">
+
+      <!-- Header -->
+      <div class="q-header">
+        <div class="q-logo-block">
+          <div class="company-name">TRICO <span>JANITORIAL</span> SERVICE</div>
+          <div class="company-tagline">Professional Cleaning &amp; Facility Management</div>
+          <div class="company-address">
+            No 79, Sumithrarama Mawatha, Kotahena, Colombo 13, Sri Lanka<br>
+            Tel: +94 777 77 2838 &nbsp;/&nbsp; +94 777 77 3242<br>
+            Email: tricojanitorialservice@gmail.com
+          </div>
+        </div>
+        <div class="q-badge">
+          <div class="badge-label">Document</div>
+          <div class="badge-title">QUOTATION</div>
+        </div>
+      </div>
+
+      <div class="q-divider"></div>
+
+      <!-- Client + Quote Meta -->
+      <div class="q-meta">
+        <div>
+          <div class="meta-group">
+            <label>Bill To — Client Name</label>
+            <input type="text" id="clientName" placeholder="e.g. ABC Corporation (Pvt) Ltd" />
+          </div>
+          <div class="meta-group" style="margin-top:14px;">
+            <label>Client Address</label>
+            <textarea id="clientAddress" rows="3" placeholder="Street, City, Postal Code"></textarea>
+          </div>
+        </div>
+        <div>
+          <div class="meta-row">
+            <div class="meta-group">
+              <label>Quotation No.</label>
+              <input type="text" id="quoteNo" placeholder="TJS-2026-001" />
+            </div>
+            <div class="meta-group">
+              <label>Issue Date</label>
+              <input type="date" id="quoteDate" />
+            </div>
+          </div>
+          <div class="meta-row" style="margin-top:14px;">
+            <div class="meta-group">
+              <label>Valid Until</label>
+              <input type="date" id="validUntil" />
+            </div>
+            <div class="meta-group">
+              <label>Prepared By</label>
+              <input type="text" id="preparedBy" placeholder="Name / Dept." />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services Table -->
+      <div class="q-table-wrap">
+        <table id="serviceTable">
+          <thead>
+            <tr>
+              <th style="width:40%">Service Description</th>
+              <th style="width:12%">Qty / Unit</th>
+              <th style="width:15%">Rate (LKR)</th>
+              <th style="width:16%">Amount (LKR)</th>
+              <th style="width:8%" class="no-print">Action</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <!-- Rows injected by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Add Row button inside card (screen) -->
+      <button class="btn btn-add-row no-print" onclick="addRow()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add New Row
+      </button>
+
+      <!-- Totals -->
+      <div class="q-totals">
+        <div class="totals-box">
+          <div class="totals-row grand">
+            <span class="t-label">Grand Total</span>
+            <span class="t-value" id="grandTotal">LKR 0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="q-footer">
+        <div class="footer-col">
+          <h4>Terms &amp; Conditions</h4>
+          <textarea id="terms" rows="4">1. This quotation is valid for 30 days from the issue date.
+2. 50% advance payment is required upon order confirmation.
+3. All prices are inclusive of applicable taxes unless stated.
+4. Delivery/commencement is subject to availability of resources.</textarea>
+          <div class="sig-line">
+            Authorized Signature &amp; Company Seal
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Bank Details (Payment)</h4>
+          <textarea id="bankDetails" rows="4">Bank: Bank of Ceylon
+Branch: Colombo 03
+A/C Name: Trico Janitorial Service
+A/C No: 0123456789</textarea>
+          <div style="margin-top:40px; display:flex; flex-direction:column; gap:30px;">
+            <div class="sig-line">Client Acceptance Signature</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Document stamp -->
+      <div class="q-stamp">
+        Generated by TRICO JANITORIAL SERVICE Quotation System &nbsp;·&nbsp; tricojanitorialservice@gmail.com
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────── JS ─────────────────────────────── -->
+  <script>
+    /* ── Login Logic ─────────────────────────────────────────────────── */
+    function doLogin() {
+      const user = document.getElementById('loginUser').value;
+      const pass = document.getElementById('loginPass').value;
+      const err  = document.getElementById('loginError');
+      const card = document.getElementById('loginCard');
+
+      if (user === 'admin' && pass === 'trico123') {
+        err.textContent = '';
+        document.getElementById('loginOverlay').classList.add('hidden');
+        document.getElementById('appShell').style.display = 'block';
+        setTimeout(() => document.getElementById('appShell').style.opacity = '1', 50);
+        // Clear fields for security
+        document.getElementById('loginPass').value = '';
+      } else {
+        err.textContent = 'Invalid Credentials. Please try again.';
+        card.classList.remove('shake');
+        void card.offsetWidth; // trigger reflow
+        card.classList.add('shake');
+      }
+    }
+
+    function doLogout() {
+      if (!confirm('Are you sure you want to log out?')) return;
+      document.getElementById('appShell').style.display = 'none';
+      document.getElementById('loginOverlay').classList.remove('hidden');
+      document.getElementById('loginUser').value = '';
+      document.getElementById('loginError').textContent = '';
+    }
+
+    /* ── State ───────────────────────────────────────────────────────── */
+    let rowIndex = 0;
+
+    /* ── Init ────────────────────────────────────────────────────────── */
+    function init() {
+      // Default dates
+      const today = new Date();
+      const fmt = d => d.toISOString().split('T')[0];
+      document.getElementById('quoteDate').value = fmt(today);
+      const valid = new Date(today); valid.setDate(today.getDate() + 30);
+      document.getElementById('validUntil').value = fmt(valid);
+
+      // Auto quote number
+      const qNum = 'TJS-' + today.getFullYear() + '-' + String(Math.floor(Math.random() * 900) + 100).padStart(3, '0');
+      document.getElementById('quoteNo').value = qNum;
+
+      // Add 3 default rows
+      addRow('Monthly Office Cleaning Service', 1, 25000);
+      addRow('Window Cleaning (Exterior)', 2, 8500);
+      addRow('Deep Carpet Cleaning', 3, 4200);
+    }
+
+    /* ── Row Management ──────────────────────────────────────────────── */
+    function addRow(desc = '', qty = '', rate = '') {
+      const idx = rowIndex++;
+      const tr = document.createElement('tr');
+      tr.id = 'row-' + idx;
+      tr.innerHTML = `
+        <td><input type="text" placeholder="Enter service description…" value="${desc}" oninput="recalculate()" /></td>
+        <td class="td-right"><input type="number" placeholder="0" value="${qty}" min="0" step="any" oninput="rowCalc(${idx})" /></td>
+        <td class="td-right"><input type="number" placeholder="0.00" value="${rate}" min="0" step="any" oninput="rowCalc(${idx})" /></td>
+        <td class="amount-cell" id="amt-${idx}">LKR 0.00</td>
+        <td class="no-print">
+          <button class="btn btn-danger btn-sm" onclick="removeRow(${idx})" title="Delete row">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          </button>
+        </td>`;
+      document.getElementById('tableBody').appendChild(tr);
+      if (qty && rate) rowCalc(idx);
+    }
+
+    function removeRow(idx) {
+      const row = document.getElementById('row-' + idx);
+      if (row) { row.remove(); recalculate(); }
+    }
+
+    /* ── Calculation ─────────────────────────────────────────────────── */
+    function rowCalc(idx) {
+      const row = document.getElementById('row-' + idx);
+      if (!row) return;
+      const inputs = row.querySelectorAll('input[type="number"]');
+      const qty  = parseFloat(inputs[0].value) || 0;
+      const rate = parseFloat(inputs[1].value) || 0;
+      const amt  = qty * rate;
+      document.getElementById('amt-' + idx).textContent = fmt(amt);
+      recalculate();
+    }
+
+    function recalculate() {
+      let grand = 0;
+      document.querySelectorAll('[id^="amt-"]').forEach(el => {
+        grand += parseFmt(el.textContent);
+      });
+      document.getElementById('grandTotal').textContent = fmt(grand);
+    }
+
+    const fmt      = n   => 'LKR ' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    const parseFmt = str => parseFloat(str.replace(/[^0-9.]/g, '')) || 0;
+
+    /* ── Print / PDF ─────────────────────────────────────────────────── */
+    function printQuote() {
+      window.print();
+    }
+
+    /* ── Reset ───────────────────────────────────────────────────────── */
+    function clearForm() {
+      if (!confirm('Reset all fields? This cannot be undone.')) return;
+      document.getElementById('clientName').value    = '';
+      document.getElementById('clientAddress').value = '';
+      document.getElementById('preparedBy').value    = '';
+      document.getElementById('tableBody').innerHTML = '';
+      rowIndex = 0;
+      init();
+    }
+
+    /* ── Boot ────────────────────────────────────────────────────────── */
+    init();
+  </script>
+</body>
+</html>
